@@ -1,0 +1,32 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    network_mode: bridge
+    volumes:
+    - /mnt/sdb1/rocket/data/runtime/db:/data/db
+    - /mnt/sdb1/rocket/data/dump:/dump
+    ports:
+    - 27017:27017/tcp
+    command:
+    - mongod
+    - --smallfiles
+    - --oplogSize
+    - '128'
+  rocketchat:
+    image: rocketchat/rocket.chat:latest
+    environment:
+      LETSENCRYPT_EMAIL: creecros@gamil.com
+      LETSENCRYPT_HOST: nachostudio.ml
+      MONGO_URL: mongodb://192.168.1.22:27017/rocketchat
+      PORT: '3000'
+      ROOT_URL: https://nachostudio.ml
+      VIRTUAL_HOST: nachostudio.ml
+      VIRTUAL_PORT: '3000'
+    network_mode: bridge
+    volumes:
+    - /mnt/sdb1/rocket/uploads:/app/uploads
+    links:
+    - mongo:mongo
+    ports:
+    - 3000:3000/tcp
